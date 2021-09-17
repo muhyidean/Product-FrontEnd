@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import './Auth.module.css';
 import { useDispatch } from 'react-redux';
 import { authActions } from '../../store/index';
@@ -6,19 +6,23 @@ import { authActions } from '../../store/index';
 const Auth = (props) => {
   
   const dispatch = useDispatch();
+  const formData = useRef();
 
   const loginHandler = () => {
-    dispatch(authActions.login());
+    const form = formData.current
+    const userCredentials = { username: form['user'].value, password: form['password'].value };
+        
+    dispatch(authActions.login(userCredentials));
     props.history.push("/user");
   }
 
   return (
     <main className="auth">
       <section>
-        <form onSubmit={loginHandler}>
+        <form ref={formData} onSubmit={loginHandler}>
           <div >
-            <label htmlFor='email'>Email</label>
-            <input type='email' id='email' />
+            <label htmlFor='user'>User</label>
+            <input type='text' id='user' />
           </div>
           <div >
             <label htmlFor='password'>Password</label>
