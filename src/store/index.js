@@ -14,18 +14,20 @@ const authSlice = createSlice(
         reducers: {
             login(state, action) {
                 const userCred = action.payload;
-                axios.post('http://localhost:8080/authenticate', userCred)
+                
+                if (Cookies.get('user') != null) {
+                    state.isAuthenticated = true
+                }
+                else {
+                    axios.post('http://localhost:8080/authenticate', userCred)
                     .then(response => {
                         Cookies.set('user', response.data.jwt)
-                        
+                        state.isAuthenticated = true
                         axios.defaults.headers.common = {
                             'Authorization': 'Bearer ' + response.data.jwt
                         };
                     })
                     .catch(err => console.log(err.message))
-
-                if (Cookies.get('user') != null) {
-                    state.isAuthenticated = true
                 }
 
 
